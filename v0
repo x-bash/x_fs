@@ -10,12 +10,16 @@
 
 # TODO: better ui
 ___cd_choose(){
-    local IFS=
+    
     local adir
     local i=1
     local text=
+
+    local IFS="
+"
     while read -r adir; do
-        text="$(printf "%s.\t%s\n" "$i" "$adir")"
+        text="$text$(printf "%s.\t%s\n" "$i" "$adir")
+"
         i=$((i+1))
     done <<A
 $1
@@ -30,7 +34,7 @@ A
     printf "...Which to cd into: "
     read -r ans
     if [ "$ans" -ge 1 ] 2>/dev/null && [ "$ans" -lt "$i" ] 2>/dev/null ; then
-        command cd "$(awk -v target="$ans"  'NR=target{ print $0 }'<<A
+        command cd "$(awk -v target="$ans"  'NR==target{ print $0 }'<<A
 $1
 A
 )"
@@ -91,7 +95,6 @@ xcd(){
                 printf "%s\n" "Not found" 2>/dev/null
                 return 1
             fi
-            echo "$ans"
             ___cd_choose "$ans"
             ;;
         *)          
@@ -101,11 +104,10 @@ xcd(){
             fi
 
             local ans
-            if ! ans="$(find "$HOME" -name "*$p*"  -type d 2>/dev/null)"; then
+            if ! ans="$(find "$HOME" -name "*$p*" -type d 2>/dev/null)"; then
                 printf "%s\n" "Not found" 2>/dev/null
                 return 1
             fi
-            echo "$ans"
             ___cd_choose "$ans"
             ;;
 
