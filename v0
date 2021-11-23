@@ -1,0 +1,89 @@
+# shellcheck shell=sh disable=SC3043,SC2164
+# cd 
+
+
+# history
+
+# jump to a folder contains: jc bin
+# jump to a child folder: jc lib
+# jump to a father folder: jo opening; cd .
+
+# TODO: better ui
+___cd_choose(){
+    local adir
+    local i=1
+    while read -r adir; do
+        printf "%s.\t%s\n" "$i" "$adir"
+        i=$((i+1))
+    done <<A
+$1
+A
+    printf "...Which to cd into: "
+    read -r ans
+    if [ "$ans" -ge 1 ] 2>/dev/null && [ "$ans" -lt "$i" ] 2>/dev/null ; then
+        cd "$(awk -v target="$ans"  'NR=target{ print $0 }'<<A
+$1
+A
+)"
+    fi
+}
+
+cdb(){
+    local p="$(cd .. && pwd)"
+    local pat="$1"
+    local target
+    if target="$(print "" | awk -v p="$p" -v target="$pat" '
+BEGIN {
+    arrl = split(p, arr, "/")
+    for (i=arrl; i>=1; i--) {
+        if (match(arr[i], "[A-Za-z0-9\ _-@]+" target "[A-Za-z0-9\ _-@]+")) {
+            print arr[i]
+            exit(0)
+        }
+    }
+    exit(1)
+}'
+)"; then
+        cd "$target"
+    fi
+
+}
+
+cd(){
+    local p="$1"
+    case "$p" in
+        ../*)
+            if [ -d "$p" ]; then
+                cd "$p"
+            else
+                cdb "${p#../}"
+            fi
+
+            ;;
+        .../*)      
+            cdb "${p#.../}"
+            ;;
+        -*)
+            local ans
+            if ! s="$(find . -name x-bash  -type d 2>/dev/null)"; then
+                printf "%s\n" "Not found" 2>/dev/null
+                return 1
+            fi
+            ___cd_choose "$s"
+            ;;
+        *)          
+            if [ -d "$p" ]; then
+                cd "$p" && return
+                return
+            fi
+
+            local ans
+            if ! s="$(find "$HOME" -name x-bash  -type d 2>/dev/null)"; then
+                printf "%s\n" "Not found" 2>/dev/null
+                return 1
+            fi
+            ___cd_choose "$s"
+            ;;
+
+    esac   
+}
