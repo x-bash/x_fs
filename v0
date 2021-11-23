@@ -10,79 +10,103 @@
 
 # TODO: better ui
 ___cd_choose(){
+    local IFS=
     local adir
     local i=1
+    local text=
     while read -r adir; do
-        printf "%s.\t%s\n" "$i" "$adir"
+        text="$(printf "%s.\t%s\n" "$i" "$adir")"
         i=$((i+1))
     done <<A
 $1
 A
+    if [ "$i" -eq 2 ]; then
+        command cd "$1"
+        return
+    fi
+
+    printf "%s" "$text"
+
     printf "...Which to cd into: "
     read -r ans
     if [ "$ans" -ge 1 ] 2>/dev/null && [ "$ans" -lt "$i" ] 2>/dev/null ; then
-        cd "$(awk -v target="$ans"  'NR=target{ print $0 }'<<A
+        command cd "$(awk -v target="$ans"  'NR=target{ print $0 }'<<A
 $1
 A
 )"
     fi
 }
 
-cdb(){
-    local p="$(cd .. && pwd)"
+___cd_back(){
+    local p
+    p="$(cd .. && pwd)"
     local pat="$1"
     local target
-    if target="$(print "" | awk -v p="$p" -v target="$pat" '
+    if target="$(printf "" | awk -v p="$p" -v target="$pat" '
 BEGIN {
+    return_code = 1
     arrl = split(p, arr, "/")
     for (i=arrl; i>=1; i--) {
-        if (match(arr[i], "[A-Za-z0-9\ _-@]+" target "[A-Za-z0-9\ _-@]+")) {
-            print arr[i]
+        if (match(arr[i], "^[A-Za-z0-9\ _@-]*" target "[A-Za-z0-9\ _-@]*$")) {
+            res = ""
+            for (j=1; j<=i; ++j) {
+                if (arr[j] == "") continue
+                res = res "/" arr[j]
+            }
+            print res
+            return_code = 0
             exit(0)
         }
     }
     exit(1)
-}'
+}
+
+END {
+    exit(return_code)
+}
+'
 )"; then
-        cd "$target"
+        command cd "$target"
     fi
 
 }
 
-cd(){
+xcd(){
     local p="$1"
     case "$p" in
         ../*)
             if [ -d "$p" ]; then
-                cd "$p"
+                command cd "$p"
             else
-                cdb "${p#../}"
+                ___cd_back "${p#../}"
             fi
 
             ;;
         .../*)      
-            cdb "${p#.../}"
+            ___cd_back "${p#.../}"
             ;;
-        -*)
+        =*)
             local ans
-            if ! s="$(find . -name x-bash  -type d 2>/dev/null)"; then
+            if ! ans="$(find . -name "*${p#=}*" -type d 2>/dev/null)"; then
                 printf "%s\n" "Not found" 2>/dev/null
                 return 1
             fi
-            ___cd_choose "$s"
+            echo "$ans"
+            ___cd_choose "$ans"
             ;;
         *)          
             if [ -d "$p" ]; then
-                cd "$p" && return
+                command cd "$p" && return
                 return
             fi
 
             local ans
-            if ! s="$(find "$HOME" -name x-bash  -type d 2>/dev/null)"; then
+            if ! ans="$(find "$HOME" -name "*$p*"  -type d 2>/dev/null)"; then
                 printf "%s\n" "Not found" 2>/dev/null
                 return 1
             fi
-            ___cd_choose "$s"
+            echo "$ans"
+            ___cd_choose "$ans"
             ;;
 
     esac   
