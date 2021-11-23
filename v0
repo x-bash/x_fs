@@ -75,7 +75,7 @@ END {
 
 }
 
-xcd(){
+___x_cmd_cd(){
     local p="$1"
     case "$p" in
         ../*)
@@ -116,3 +116,9 @@ xcd(){
 
     esac   
 }
+
+___x_cmd_cd_activate(){
+    alias cd ___x_cmd_cd
+}
+
+___x_cmd_cd_activate
