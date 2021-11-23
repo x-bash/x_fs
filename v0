@@ -91,7 +91,8 @@ xcd(){
             ;;
         =*)
             local ans
-            if ! ans="$(find . -name "*${p#=}*" -type d 2>/dev/null)"; then
+            ans="$(find . -name "*${p#=}*" -type d 2>/dev/null)"
+            if [ "$ans" = "" ]; then
                 printf "%s\n" "Not found" 2>/dev/null
                 return 1
             fi
@@ -104,7 +105,9 @@ xcd(){
             fi
 
             local ans
-            if ! ans="$(find "$HOME" -name "*$p*" -type d 2>/dev/null)"; then
+            echo find "$HOME" -name "*$p*" -type d
+            ans="$(find "$HOME" -name "*$p*" -type d 2>/dev/null)"
+            if [ "$ans" = "" ]; then
                 printf "%s\n" "Not found" 2>/dev/null
                 return 1
             fi
