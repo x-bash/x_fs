@@ -102,24 +102,24 @@ ___x_cmd_cd(){
             # cd to most recent
             ;;
 
-        /*)          
-            if [ -d "$p" ]; then
-                command cd "$p" && return
-                return
-            fi
+        # /*) # Not practically worked       
+        #     if [ -d "$p" ]; then
+        #         command cd "$p" && return
+        #         return
+        #     fi
 
-            local ans
-            ans="$(find / \
-                -path "$HOME/Library" -prune \
-                -o -path "$HOME/.*" -prune \
-                -o -path "*/.git" -prune \
-                -o -name "*${p#/}*" -type d -print 2>/dev/null)"
-            if [ "$ans" = "" ]; then
-                printf "%s\n" "Not found" 2>/dev/null
-                return 1
-            fi
-            ___cd_choose "$ans"
-            ;;
+        #     local ans
+        #     ans="$(find / \
+        #         -path "$HOME/Library" -prune \
+        #         -o -path "$HOME/.*" -prune \
+        #         -o -path "*/.git" -prune \
+        #         -o -name "*${p#/}*" -type d -print 2>/dev/null)"
+        #     if [ "$ans" = "" ]; then
+        #         printf "%s\n" "Not found" 2>/dev/null
+        #         return 1
+        #     fi
+        #     ___cd_choose "$ans"
+        #     ;;
         *)          
             if [ -d "$p" ]; then
                 command cd "$p" && return
