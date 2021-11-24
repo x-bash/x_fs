@@ -99,7 +99,7 @@ ___x_cmd_cd_iter()(
             cur="$cur*"
         fi
         ls -d $cur/ | while read -r elem; do
-            ___x_cmd_cd_iter "$root/$elem" "$iter_path"
+            ___x_cmd_cd_iter "${root%/}/$elem" "$iter_path"
             # echo "$root/$elem" "$iter_path"
         done
     fi
@@ -134,6 +134,7 @@ ___x_cmd_cd(){
             ;;
         -) 
             # cd to most recent
+            command cd -
             ;;
 
         # /*) # Not practically worked       
