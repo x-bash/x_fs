@@ -112,6 +112,21 @@ ___x_cmd_cd_origin(){
     pwd >> "$___X_CMD_ROOT/.tmp/cd/history"
 }
 
+___X_CMD_AWK_CODE='{
+    if (count > 200) { exit(exit_code); }
+    if (data[$0] == "") {
+        data[$0] = 1
+        print $0
+        count = count + 1
+    } else {
+        exit_code = 1
+    }
+}
+END {
+    exit(exit_code)
+}
+'
+
 ___x_cmd_cd(){
     local p="$1"
     case "$p" in
@@ -139,9 +154,25 @@ ___x_cmd_cd(){
             fi
             ___cd_choose "$ans"
             ;;
+        -%)
+            rm "$___X_CMD_ROOT/.tmp/cd/history"
+            ;;
+        -\?)
+            local s
+            s="$(awk "$___X_CMD_AWK_CODE" <"$___X_CMD_ROOT/.tmp/cd/history")"
+            printf "%s\n" "$s" | tee "$___X_CMD_ROOT/.tmp/cd/history"
+            ;;
+        --)
+            # global or local ...
+            ;;
         -) 
             # cd to most recent
             ___x_cmd_cd_origin -
+            ;;
+        -*)
+            local s
+            s="$(awk "$___X_CMD_AWK_CODE" <"$___X_CMD_ROOT/.tmp/cd/history")"
+            ___cd_choose "$(printf "%s\n" "$s" | tee "$___X_CMD_ROOT/.tmp/cd/history" | grep "${p#-}")"
             ;;
 
         # /*) # Not practically worked       
