@@ -29,7 +29,7 @@ ___cd_choose(){
 $1
 A
     if [ "$i" -eq 2 ]; then
-        command cd "$1"
+        ___x_cmd_cd_origin "$1"
         return
     fi
 
@@ -38,7 +38,7 @@ A
     printf "...Which to cd into: "
     read -r ans
     if [ "$ans" -ge 1 ] 2>/dev/null && [ "$ans" -lt "$i" ] 2>/dev/null ; then
-        command cd "$(awk -v target="$ans"  'NR==target{ print $0 }'<<A
+        ___x_cmd_cd_origin "$(awk -v target="$ans"  'NR==target{ print $0 }'<<A
 $1
 A
 )"
@@ -74,7 +74,7 @@ END {
 }
 '
 )"; then
-        command cd "$target"
+        ___x_cmd_cd_origin "$target"
     fi
 
 }
@@ -105,16 +105,23 @@ ___x_cmd_cd_iter()(
     fi
 )
 
+mkdir -p "$___X_CMD_ROOT/.tmp/cd"
+
+___x_cmd_cd_origin(){
+    command cd "$1"
+    pwd >> "$___X_CMD_ROOT/.tmp/cd/history"
+}
+
 ___x_cmd_cd(){
     local p="$1"
     case "$p" in
         ...)
-            cd ../.. ;;
+            ___x_cmd_cd_origin ../.. ;;
         ....)
-            cd ../../../ ;;
+            ___x_cmd_cd_origin ../../../ ;;
         ../*)
             if [ -d "$p" ]; then
-                command cd "$p"
+                ___x_cmd_cd_origin "$p"
             else
                 ___cd_back "${p#../}"
             fi
@@ -134,7 +141,7 @@ ___x_cmd_cd(){
             ;;
         -) 
             # cd to most recent
-            command cd -
+            ___x_cmd_cd_origin -
             ;;
 
         # /*) # Not practically worked       
@@ -157,19 +164,19 @@ ___x_cmd_cd(){
         #     ;;
         /*) 
             if [ -d "$p" ]; then
-                command cd "$p" && return
+                ___x_cmd_cd_origin "$p" && return
             fi
             ___cd_choose "$(___x_cmd_cd_iter / "${p#/}")"
             ;;
         */*)
             if [ -d "$p" ]; then
-                command cd "$p" && return
+                ___x_cmd_cd_origin "$p" && return
             fi
             ___cd_choose "$(___x_cmd_cd_iter . "${p}")"
             ;;
         *)          
             if [ -d "$p" ]; then
-                command cd "$p" && return
+                ___x_cmd_cd_origin "$p" && return
                 return
             fi
 
