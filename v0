@@ -79,6 +79,24 @@ END {
 
 }
 
+___x_cmd_cd_iter()(
+    local root="$1"
+    local iter_path="$2"
+    cd "$root"
+    local cur="${iter_path%%/*}"
+    
+    if [ "$cur" = "$iter_path" ]; then
+        # this is final
+        ls "$cur" | awk -v root="$root" '{ printf("%s/%s", root, $0) }'
+    else
+        local elem
+        iter_path="${iter_path#*/}"
+        ls "$cur" | while read -r elem; do
+            ___x_cmd_cd_iter "$root/$elem" "$iter_path"
+        done
+    fi
+)
+
 ___x_cmd_cd(){
     local p="$1"
     case "$p" in
@@ -128,11 +146,13 @@ ___x_cmd_cd(){
             if [ -d "$p" ]; then
                 command cd "$p" && return
             fi
+            ___cd_choose "$(___x_cmd_cd_iter / "${p#/}")"
             ;;
         */*)
             if [ -d "$p" ]; then
                 command cd "$p" && return
             fi
+            ___cd_choose "$(___x_cmd_cd_iter . "${p}")"
             ;;
         *)          
             if [ -d "$p" ]; then
