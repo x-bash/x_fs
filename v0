@@ -124,6 +124,16 @@ ___x_cmd_cd(){
         #     fi
         #     ___cd_choose "$ans"
         #     ;;
+        /*) 
+            if [ -d "$p" ]; then
+                command cd "$p" && return
+            fi
+            ;;
+        */*)
+            if [ -d "$p" ]; then
+                command cd "$p" && return
+            fi
+            ;;
         *)          
             if [ -d "$p" ]; then
                 command cd "$p" && return
