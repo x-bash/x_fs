@@ -91,14 +91,14 @@ ___x_cmd_cd_iter()(
         if [ "${cur%*}" = "$cur" ]; then
             cur="$cur*"
         fi
-        ls -d $cur/ | awk -v root="$root" '{ printf("%s%s", root, $0) }'
+        ls -d $cur/ 2>/dev/null | awk -v root="$root" '{ printf("%s%s\n", root, $0) }'
     else
         local elem
         iter_path="${iter_path#*/}"
         if [ "${cur%*}" = "$cur" ]; then
             cur="$cur*"
         fi
-        ls -d $cur/ | while read -r elem; do
+        ls -d $cur/ 2>/dev/null | while read -r elem; do
             ___x_cmd_cd_iter "${root%/}/$elem" "$iter_path"
             # echo "$root/$elem" "$iter_path"
         done
