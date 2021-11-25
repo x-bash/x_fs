@@ -10,7 +10,6 @@ xrc x_fs/mv
 xrc x_fs/cp
 xrc x_fs/rm
 
-
 ___x_cmd_fs_activate(){
     alias cd=___x_cmd_cd
     alias ls=___x_cmd_ls
@@ -19,5 +18,5 @@ ___x_cmd_fs_activate(){
     alias rm=___x_cmd_rm
 }
 
-___x_cmd_fs_activate
+# ___x_cmd_fs_activate
 
