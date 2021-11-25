@@ -17,6 +17,8 @@ cd ...      # will goto /a/b/ccc/ddd
 cd -
 cd --       # go back to second latest folder in history
 cd -ddd     # go back the latest folder contain ddd
+cd -?       # show history
+cd -/       # clear history
 ```
 
 
