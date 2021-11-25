@@ -191,13 +191,12 @@ ___x_cmd_cd(){
             ;;
         --)
             ___X_CMD_CD_HISTORY="$(printf "%s" "$___X_CMD_CD_HISTORY" | awk "$___X_CMD_AWK_CODE")"
-            local target="${___X_CMD_CD_HISTORY%
+            local target="${___X_CMD_CD_HISTORY#*
 *
-*}"
-            [ "$target" = "$___X_CMD_CD_HISTORY" ] && printf "%s\n" "No such item" >&2 && return
-            target="${target##*
 }"
-            printf "Current %s" "$target"
+            [ "$target" = "$___X_CMD_CD_HISTORY" ] && printf "%s\n" "No such item" >&2 && return
+            target="${target%%
+*}"
             ___x_cmd_cd_origin "$target"
             ;;
         -*)
