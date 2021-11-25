@@ -256,8 +256,35 @@ ___x_cmd_cd(){
     esac   
 }
 
+___x_cmd_cd_advise_candidates(){
+    local can="$1"
+    case "$can" in
+        "")
+            cat <<A
+=
+-
+...
+../
+$(ls)
+A
+        ;;
+        =*)
+            ;;
+        -)  ;;
+        --)
+            ;;
+        -*)
+            ;;
+        /*) ;;
+        */*) ;;
+
+
+    esac
+}
+
 ___x_cmd_cd_activate(){
     alias cd=___x_cmd_cd
 }
+
 
 ___x_cmd_cd_activate
