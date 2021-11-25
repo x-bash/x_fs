@@ -1,6 +1,7 @@
 # shellcheck shell=sh disable=SC3043,SC2164
-# cd 
 
+# author:       Li Junhao           l@x-cmd.com    edwinjhlee.github.io
+# maintainer:   Li Junhao
 
 # history
 
