@@ -176,6 +176,7 @@ ___x_cmd_cd(){
             ;;
 
         -\?)     
+            ___X_CMD_CD_HISTORY="$(printf "%s" "$___X_CMD_CD_HISTORY" | awk "$___X_CMD_AWK_CODE")"
             printf "%s\n" "$___X_CMD_CD_HISTORY"
             ;;
         -%) # very less used
@@ -191,8 +192,9 @@ ___x_cmd_cd(){
 *
 *}"
             [ "$target" = "$___X_CMD_CD_HISTORY" ] && printf "%s\n" "No such item" >&2 && return
-            target="${___X_CMD_CD_HISTORY##*
+            target="${target##*
 }"
+            printf "Current %s" "$target"
             ___x_cmd_cd_origin "$target"
             ;;
         -*)
