@@ -3,15 +3,11 @@
 # author:       Li Junhao           l@x-cmd.com    edwinjhlee.github.io
 # maintainer:   Li Junhao
 
-# history
-
 # jump to a folder contains: jc bin
 # jump to a child folder: jc lib
 # jump to a father folder: jo opening; cd .
 
 # cd /u/l/
-
-# find /u*/s*/r*
 
 # TODO: better ui
 ___cd_choose(){
