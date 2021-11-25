@@ -109,9 +109,12 @@ mkdir -p "$___X_CMD_ROOT/.tmp/cd"
 
 ___x_cmd_cd_origin(){
     command cd "$1"
-    ___X_CMD_CD_HISTORY="$___X_CMD_CD_HISTORY
+    if [ -z "$___X_CMD_CD_HISTORY" ]; then
+        ___X_CMD_CD_HISTORY="$(pwd | tee -a "$___X_CMD_ROOT/.tmp/cd/history")"
+    else
+        ___X_CMD_CD_HISTORY="$___X_CMD_CD_HISTORY
 $(pwd | tee -a "$___X_CMD_ROOT/.tmp/cd/history")"
-    
+    fi
 }
 
 ___X_CMD_AWK_CODE='{
