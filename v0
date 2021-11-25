@@ -286,5 +286,4 @@ ___x_cmd_cd_activate(){
     alias cd=___x_cmd_cd
 }
 
-
 ___x_cmd_cd_activate
