@@ -132,6 +132,9 @@ END {
 ___x_cmd_cd(){
     local p="$1"
     case "$p" in
+        "")
+            command cd
+            ;;
         ...)
             ___x_cmd_cd_origin ../.. ;;
         ....)
