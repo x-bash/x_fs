@@ -112,8 +112,8 @@ ___x_cmd_cd_origin(){
     if [ -z "$___X_CMD_CD_HISTORY" ]; then
         ___X_CMD_CD_HISTORY="$(pwd | tee -a "$___X_CMD_ROOT/.tmp/cd/history")"
     else
-        ___X_CMD_CD_HISTORY="$___X_CMD_CD_HISTORY
-$(pwd | tee -a "$___X_CMD_ROOT/.tmp/cd/history")"
+        ___X_CMD_CD_HISTORY="$(pwd | tee -a "$___X_CMD_ROOT/.tmp/cd/history")
+$___X_CMD_CD_HISTORY"
     fi
 }
 
