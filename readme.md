@@ -10,13 +10,13 @@ cd /a/b/ccc/ddd/eee/fff
 cd ...      # will goto /a/b/ccc/ddd
 ```
 
-## go back to last folder
+## go back to last folder in history
 
 
 ```bash
 cd -
-cd --
-cd -ddd
+cd --       # go back to second latest folder in history
+cd -ddd     # go back the latest folder contain ddd
 ```
 
 
