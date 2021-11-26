@@ -42,12 +42,6 @@ cd ../cc    # will go to /a/b/ccc
 cd /u/b     # will go to /usr/bin
 ```
 
-## With short alias
-
-```bash
-cd /u/b     # will go to /usr/bin
-```
-
 ## go with find
 
 ```bash
