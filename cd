@@ -80,9 +80,10 @@ END {
 ___x_cmd_cd_iter()(
     local root="$1"
     local iter_path="$2"
-    command cd "$root"
+
+    ___x_cmd_cd_origin "$root"
+
     local cur="${iter_path%%/*}"
-    
     
     if [ "$cur" = "$iter_path" ]; then
         # this is final
@@ -106,7 +107,13 @@ ___x_cmd_cd_iter()(
 mkdir -p "$___X_CMD_ROOT/.tmp/cd"
 
 ___x_cmd_cd_origin(){
-    command cd "$1"
+    # TODO: `command cd` will not execute buildin command `cd` in zsh, refer: https://linux.die.net/man/1/zshbuiltins
+    if [ -n "$ZSH_VERSION" ]; then
+        builtin cd "$@"
+    else
+        command cd "$@"
+    fi
+
     if [ -z "$___X_CMD_CD_HISTORY" ]; then
         ___X_CMD_CD_HISTORY="$(pwd | tee -a "$___X_CMD_ROOT/.tmp/cd/history")"
     else
@@ -134,7 +141,7 @@ ___x_cmd_cd(){
     local p="$1"
     case "$p" in
         "")
-            command cd
+            ___x_cmd_cd_origin
             ;;
         ...)
             ___x_cmd_cd_origin ../.. ;;
@@ -204,7 +211,7 @@ ___x_cmd_cd(){
 
         # /*) # Not practically worked       
         #     if [ -d "$p" ]; then
-        #         command cd "$p" && return
+        #         ___x_cmd_cd_origin "$p" && return
         #         return
         #     fi
 
@@ -234,6 +241,7 @@ ___x_cmd_cd(){
             ;;
         *)          
             if [ -d "$p" ]; then
+
                 ___x_cmd_cd_origin "$p" && return
                 return
             fi

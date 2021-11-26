@@ -12,7 +12,6 @@ cd ...      # will goto /a/b/ccc/ddd
 
 ## go back to last folder in history
 
-
 ```bash
 cd -
 cd --       # go back to second latest folder in history
@@ -20,7 +19,6 @@ cd -ddd     # go back the latest folder contain ddd
 cd -?       # show history
 cd -/       # clear history
 ```
-
 
 ## go forward recursively for sub folder
 
@@ -50,11 +48,8 @@ cd /u/b     # will go to /usr/bin
 cd /u/b     # will go to /usr/bin
 ```
 
-
 ## go with find
 
 ```bash
 cd bin
 ```
-
-
