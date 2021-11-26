@@ -1,6 +1,7 @@
 # shellcheck shell=sh disable=SC3043,SC2164
 
 xrc x_fs/v0 && ___x_cmd_fs_activate
+xrc assert
 
 # testcase for cd
 # Our testdir is testcase/testdir/a/b/ccc/ddd/eee/fff
@@ -9,14 +10,24 @@ test_subfolder(){
     a=$(pwd)
     cd testcase/testdir/a/b/ccc
     cd ...
+    if ! [ "$(pwd)" = "${a}/testcase/testdir/a" ]; then
+        echo "error: $(pwd) != ${a}/testcase/testdir/a"
+    fi
     cd ....
-    b=$(pwd)
+    c=$(pwd)
 
-    if [ "$a" = "$b" ]; then
-        return 0
-    else
+    if ! [ "$a" = "$c" ]; then
+        echo "error: a != c"
         return 1
     fi
+}
+
+test_last_folder(){
+    cd -
+    if ! [ "$(pwd)" = "${a}/testcase/testdir/a" ]; then
+        echo "error: $(pwd) != ${a}/testcase/testdir/a"
+    fi
+    cd -
 }
 
 # utils

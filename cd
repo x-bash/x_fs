@@ -187,7 +187,6 @@ ___x_cmd_cd(){
             ___X_CMD_CD_HISTORY=
             ;;
         -) 
-            # cd to most recent
             ___x_cmd_cd_origin -
             ;;
         --)
@@ -224,7 +223,6 @@ ___x_cmd_cd(){
         #     ___x_cmd_cd_choose "$ans"
         #     ;;
         /*) 
-            echo "====test====: here4" >&2
             if [ -d "$p" ]; then
                 ___x_cmd_cd_origin "$p" && return
             fi

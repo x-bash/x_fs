@@ -7,8 +7,8 @@
 
 | feature\env | bash5 |bash4|bash3|zsh| dash  |ash|  gawk| mawk | BusyBox awk | nawk |
 |---|---|---|---|---|---|---|---|---|---|---|
-|subfolder<br>`cd ...`|✔|
-|last folder<br>`cd -`||
+|subfolder<br>`cd ...`|✔|✔|✔|✔|✔|✔|✔|✔|✔|✔|
+|last folder<br>`cd -`|✔|✔|✔|✔|✔|✔|✔|✔|✔|✔|
 |latest folder contain ddd<br>`cd -ddd`||
 | show history<br>`cd -?`||
 | clear history<br>`cd -/`|||||
