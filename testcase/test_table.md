@@ -10,7 +10,7 @@
 |subfolder<br>`cd ...`|✔|✔|✔|✔|✔|✔|✔|✔|✔|✔|
 |last folder<br>`cd -`|✔|✔|✔|✔|✔|✔|✔|✔|✔|✔|
 |latest folder contain ddd<br>`cd -ddd`||
-| show history<br>`cd -?`||
+| show history<br>`cd -?`|✔|✔|✔|✘|✔|✔|✔|✔|✔|✔|
 | clear history<br>`cd -/`|||||
 | go forward<br>`cd =ff` ||
 |go backward<br>`cd ../cc`||
