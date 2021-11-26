@@ -1,0 +1,34 @@
+# shellcheck shell=sh disable=SC3043,SC2164
+
+xrc x_fs/v0 && ___x_cmd_fs_activate
+
+# testcase for cd
+# Our testdir is testcase/testdir/a/b/ccc/ddd/eee/fff
+
+test_subfolder(){
+    a=$(pwd)
+    cd testcase/testdir/a/b/ccc
+    cd ...
+    cd ....
+    b=$(pwd)
+
+    if [ "$a" = "$b" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# utils
+
+start_test() {
+    < "$1" awk '$0~/^test_[^\(]+\(\)/{ gsub(/\(\)\{/, "", $0); print $0 }' | while read -r line; do
+        echo "Testing Function: $line"
+        if ! eval "$line"; then
+            printf "\033[0;31m======= Fail at function: %s \033[0m" "$line" >&2
+            break
+        fi
+    done
+}
+
+start_test ./testcase/v0_test_base

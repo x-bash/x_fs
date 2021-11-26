@@ -140,33 +140,28 @@ END {
 ___x_cmd_cd(){
     local p="$1"
     case "$p" in
-        "")
-            ___x_cmd_cd_origin
-            ;;
-        ...)
-            ___x_cmd_cd_origin ../.. ;;
-        ....)
-            ___x_cmd_cd_origin ../../../ ;;
+        "")      ___x_cmd_cd_origin              ;;
+        ...)     ___x_cmd_cd_origin ../..        ;;
+        ....)    ___x_cmd_cd_origin ../../../    ;;
         ../*)
             if [ -d "$p" ]; then
                 ___x_cmd_cd_origin "$p"
             else
                 ___x_cmd_cd_back "${p#../}"
             fi
-
             ;;
         .../*)      
             ___x_cmd_cd_back "${p#.../}"
             ;;
-        =*)
-            local ans
-            ans="$(find . -name "*${p#=}*" -type d 2>/dev/null)"
-            if [ "$ans" = "" ]; then
-                printf "%s\n" "Not found" 2>/dev/null
-                return 1
-            fi
-            ___x_cmd_cd_choose "$ans"
-            ;;
+        # =\*)
+        #     local ans
+        #     ans="$(find . -name "*${p#=}*" -type d 2>/dev/null)"
+        #     if [ "$ans" = "" ]; then
+        #         printf "%s\n" "Not found" 2>/dev/null
+        #         return 1
+        #     fi
+        #     ___x_cmd_cd_choose "$ans"
+        #     ;;
         
         # Self defined documents
         %clear)
@@ -178,6 +173,7 @@ ___x_cmd_cd(){
             printf "%s\n" "$s" | tee "$___X_CMD_ROOT/.tmp/cd/history"
             ;;
         %*)
+            echo "====test====: here3" >&2
             local s
             s="$(awk "$___X_CMD_AWK_CODE" <"$___X_CMD_ROOT/.tmp/cd/history")"
             ___x_cmd_cd_choose "$(printf "%s\n" "$s" | tee "$___X_CMD_ROOT/.tmp/cd/history" | grep "${p#-}")"
@@ -228,6 +224,7 @@ ___x_cmd_cd(){
         #     ___x_cmd_cd_choose "$ans"
         #     ;;
         /*) 
+            echo "====test====: here4" >&2
             if [ -d "$p" ]; then
                 ___x_cmd_cd_origin "$p" && return
             fi
@@ -239,10 +236,9 @@ ___x_cmd_cd(){
             fi
             ___x_cmd_cd_choose "$(___x_cmd_cd_iter . "${p}")"
             ;;
-        *)          
+        *)
             if [ -d "$p" ]; then
-
-                ___x_cmd_cd_origin "$p" && return
+                ___x_cmd_cd_origin "$p"
                 return
             fi
 
