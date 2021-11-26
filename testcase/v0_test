@@ -1,0 +1,6 @@
+# shellcheck shell=sh disable=SC3043,SC2164
+
+cp -r ./* ~/.x-cmd/x_fs/
+xrc x_fs/v0
+___x_cmd_fs_activate
+
