@@ -6,6 +6,10 @@ xrc assert
 # testcase for cd
 # Our testdir is testcase/testdir/a/b/ccc/ddd/eee/fff
 
+test_clear_history(){
+    cd -/
+}
+
 test_subfolder(){
     a=$(pwd)
     cd testcase/testdir/a/b/ccc
@@ -23,15 +27,19 @@ test_subfolder(){
 }
 
 test_last_folder(){
-    cd -
+    cd - > /dev/null
     if ! [ "$(pwd)" = "${a}/testcase/testdir/a" ]; then
         echo "error: $(pwd) != ${a}/testcase/testdir/a"
     fi
-    cd -
+    cd - > /dev/null
 }
 
 test_show_history(){
-    cd -?
+    assert_stdout "cd -?" <<A
+$(pwd)
+$(pwd)/testcase/testdir/a
+$(pwd)/testcase/testdir/a/b/ccc
+A
 }
 
 # test_forward_backward(){
