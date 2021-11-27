@@ -12,7 +12,7 @@ ___x_cmd_rm(){
         esac
     done
 
-    rm "$@"
+    command rm "$@"
 }
 
 

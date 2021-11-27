@@ -7,7 +7,7 @@
 # TODO: showing progress when you upload a file.
 
 ___x_cmd_cp(){
-    cp "$@"
+    command cp "$@"
 }
 
 

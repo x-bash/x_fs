@@ -13,7 +13,7 @@ ___x_cmd_mv(){
         esac
     done
 
-    mv "$@"
+    command mv "$@"
 }
 
 
