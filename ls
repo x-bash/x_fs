@@ -49,12 +49,11 @@ ___x_cmd_fs_ls_1(){
     if [ "$#" -eq 1 ]; then
         case "$1" in
             :*.zip)     ;;
-            :cpu)       ___x_cmd_fs_ls_cpu ;;
-            :mem)       ___x_cmd_fs_ls_mem ;;
-            *)          return 1
+            :cpu)       ___x_cmd_fs_ls_cpu && return 0;;
+            :mem)       ___x_cmd_fs_ls_mem && return 0;;
         esac
     fi
-    return 0
+    return 1
 }
 
 ___x_cmd_ls(){
