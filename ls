@@ -58,5 +58,5 @@ ___x_cmd_fs_ls_1(){
 }
 
 ___x_cmd_ls(){
-    ___x_cmd_fs_ls_1 "$@" || ls "$@"
+    ___x_cmd_fs_ls_1 "$@" || command ls "$@"
 }
