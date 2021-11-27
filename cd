@@ -99,7 +99,6 @@ ___x_cmd_cd_iter()(
         fi
         ls -d $cur/ 2>/dev/null | while read -r elem; do
             ___x_cmd_cd_iter "${root%/}/$elem" "$iter_path"
-            # echo "$root/$elem" "$iter_path"
         done
     fi
 )
@@ -173,7 +172,6 @@ ___x_cmd_cd(){
             printf "%s\n" "$s" | tee "$___X_CMD_ROOT/.tmp/cd/history"
             ;;
         %*)
-            echo "====test====: here3" >&2
             local s
             s="$(awk "$___X_CMD_AWK_CODE" <"$___X_CMD_ROOT/.tmp/cd/history")"
             ___x_cmd_cd_choose "$(printf "%s\n" "$s" | tee "$___X_CMD_ROOT/.tmp/cd/history" | grep "${p#-}")"
@@ -187,6 +185,7 @@ ___x_cmd_cd(){
             ___X_CMD_CD_HISTORY=
             ;;
         -) 
+            # cd to most recent
             ___x_cmd_cd_origin -
             ;;
         --)
