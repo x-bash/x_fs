@@ -1,0 +1,64 @@
+# shellcheck shell=sh disable=SC3043,SC2164
+
+xrc x_fs/v0 && ___x_cmd_fs_activate
+xrc assert
+
+# testcase for cd
+# Our testdir is testcase/testdir/a/b/ccc/ddd/eee/fff
+
+test_clear_history(){
+    cd -/
+}
+
+test_subfolder(){
+    a=$(pwd)
+    cd testcase/testdir/a/b/ccc
+    cd ...
+    if ! [ "$(pwd)" = "${a}/testcase/testdir/a" ]; then
+        echo "error: $(pwd) != ${a}/testcase/testdir/a"
+    fi
+    cd ....
+    c=$(pwd)
+
+    if ! [ "$a" = "$c" ]; then
+        echo "error: a != c"
+        return 1
+    fi
+}
+
+test_last_folder(){
+    cd - > /dev/null
+    if ! [ "$(pwd)" = "${a}/testcase/testdir/a" ]; then
+        echo "error: $(pwd) != ${a}/testcase/testdir/a"
+    fi
+    cd - > /dev/null
+}
+
+test_show_history(){
+    assert_stdout "cd -?" <<A
+$(pwd)
+$(pwd)/testcase/testdir/a
+$(pwd)/testcase/testdir/a/b/ccc
+A
+}
+
+# test_forward_backward(){
+#     cd =ccc
+#     pwd
+#     cd ../x_fs
+#     pwd
+# }
+
+# utils
+
+start_test() {
+    < "$1" awk '$0~/^test_[^\(]+\(\)/{ gsub(/\(\)\{/, "", $0); print $0 }' | while read -r line; do
+        printf "Testing Function: %s\n" "$line"
+        if ! eval "$line"; then
+            printf "\033[0;31m======= Fail at function: %s \033[0m" "$line" >&2
+            break
+        fi
+    done
+}
+
+start_test ./testcase/v0_test_base
