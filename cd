@@ -225,7 +225,13 @@ ___x_cmd_cd(){
             if [ -d "$p" ]; then
                 ___x_cmd_cd_origin "$p" && return
             fi
-            ___x_cmd_cd_choose "$(___x_cmd_cd_iter / "${p#/}")"
+            local ans
+            ans="$(___x_cmd_cd_iter / "${p#/}")"
+            if [ "$ans" = "" ]; then
+                printf "%s\n" "cd: no such directory: $p " 2>/dev/null
+                return 1
+            fi
+            ___x_cmd_cd_choose "$ans"
             ;;
         */*)
             if [ -d "$p" ]; then
@@ -234,7 +240,6 @@ ___x_cmd_cd(){
 
             local ans
             ans="$(___x_cmd_cd_iter . "${p}")"
-
             if [ "$ans" = "" ]; then
                 printf "%s\n" "cd: no such directory: $p " 2>/dev/null
                 return 1
