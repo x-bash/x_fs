@@ -2,7 +2,7 @@
 
 x log init x_fs
 
-command cp -r ./* ~/.x-cmd/x_fs/
+cp -r ./* ~/.x-cmd/x_fs/
 
 test_cross_env() {
     for i in debian alpine centos; do
