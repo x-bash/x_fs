@@ -168,25 +168,25 @@ ___x_cmd_cd(){
             ;;
         
         # Self defined documents
-        %clear)
-            rm "$___X_CMD_ROOT/.tmp/cd/history"
-            ;;
-        %list)
-            local s
-            s="$(awk "$___X_CMD_AWK_CODE" <"$___X_CMD_ROOT/.tmp/cd/history")"
-            printf "%s\n" "$s" | tee "$___X_CMD_ROOT/.tmp/cd/history"
-            ;;
-        %*)
-            local s
-            s="$(awk "$___X_CMD_AWK_CODE" <"$___X_CMD_ROOT/.tmp/cd/history")"
-            ___x_cmd_cd_choose "$(printf "%s\n" "$s" | tee "$___X_CMD_ROOT/.tmp/cd/history" | grep "${p#-}")"
-            ;;
+        # %clear)
+        #     rm "$___X_CMD_ROOT/.tmp/cd/history"
+        #     ;;
+        # %list)
+        #     local s
+        #     s="$(awk "$___X_CMD_AWK_CODE" <"$___X_CMD_ROOT/.tmp/cd/history")"
+        #     printf "%s\n" "$s" | tee "$___X_CMD_ROOT/.tmp/cd/history"
+        #     ;;
+        # %*)
+        #     local s
+        #     s="$(awk "$___X_CMD_AWK_CODE" <"$___X_CMD_ROOT/.tmp/cd/history")"
+        #     ___x_cmd_cd_choose "$(printf "%s\n" "$s" | tee "$___X_CMD_ROOT/.tmp/cd/history" | grep "${p#-}")"
+        #     ;;
 
         -\?)     
             ___X_CMD_CD_HISTORY="$(printf "%s" "$___X_CMD_CD_HISTORY" | awk "$___X_CMD_AWK_CODE")"
             printf "%s\n" "$___X_CMD_CD_HISTORY"
             ;;
-        -%) # very less used
+        -/) # very less used
             ___X_CMD_CD_HISTORY=
             ;;
         -) 
