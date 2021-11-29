@@ -170,7 +170,7 @@ ___x_cmd_cd(){
         ....)    ___x_cmd_cd_origin ../../../    ;;
         ../*)    ___x_cmd_cd_back "${p#../}"     ;;
         .../*)   ___x_cmd_cd_back "${p#.../}"    ;;
-        ./)      ___x_cmd_cd_choose "$(find . -name "*${p#./}*" -type d 2>/dev/null)" ;;
+        ./*)     ___x_cmd_cd_choose "$(find . -name "*${p#./}*" -type d 2>/dev/null)" ;;
         
         # Self defined documents
         -%)     
@@ -205,7 +205,7 @@ A
 
         /*)    ___x_cmd_cd_choose "$(___x_cmd_cd_iter / "${p#/}")" ;;
         */*)   ___x_cmd_cd_choose "$(___x_cmd_cd_iter . "${p}")"   ;;
-        *)   
+        *)
             ___X_CMD_CD_HISTORY="$(printf "%s" "$___X_CMD_CD_HISTORY" | awk "$___X_CMD_AWK_CODE")"
             ___x_cmd_cd_choose "$(printf "%s" "$___X_CMD_CD_HISTORY" | grep "${p#-}")"
             ;;
