@@ -95,14 +95,14 @@ ___x_cmd_cd_iter()(
         if [ "${cur%*}" = "$cur" ]; then
             cur="$cur*"
         fi
-        ls -d $cur/ 2>/dev/null | awk -v root="$root" '{ printf("%s%s\n", root, $0) }'
+        eval "ls -d $cur/" 2>/dev/null | awk -v root="$root" '{ printf("%s%s\n", root, $0) }'
     else
         local elem
         iter_path="${iter_path#*/}"
         if [ "${cur%*}" = "$cur" ]; then
             cur="$cur*"
         fi
-        ls -d $cur/ 2>/dev/null | while read -r elem; do
+        eval "ls -d $cur/" 2>/dev/null | while read -r elem; do
             ___x_cmd_cd_iter "${root%/}/$elem" "$iter_path"
         done
     fi
@@ -111,7 +111,7 @@ ___x_cmd_cd_iter()(
 mkdir -p "$___X_CMD_ROOT/.tmp/cd"
 
 ___x_cmd_cd_origin(){
-    # TODO: `command cd` will not execute buildin command `cd` in zsh, refer: https://linux.die.net/man/1/zshbuiltins
+    # `command cd` will not execute buildin command `cd` in zsh, refer: https://linux.die.net/man/1/zshbuiltins
     if [ -n "$ZSH_VERSION" ]; then
         builtin cd "$@"
     else
