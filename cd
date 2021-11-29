@@ -152,15 +152,20 @@ ___x_cmd_cd(){
         .../*)      
             ___x_cmd_cd_back "${p#.../}"
             ;;
-        # =\*)
-        #     local ans
-        #     ans="$(find . -name "*${p#=}*" -type d 2>/dev/null)"
-        #     if [ "$ans" = "" ]; then
-        #         printf "%s\n" "Not found" 2>/dev/null
-        #         return 1
-        #     fi
-        #     ___x_cmd_cd_choose "$ans"
-        #     ;;
+        ./)
+            if [ -d "$p" ]; then
+                ___x_cmd_cd_origin "$p"
+                return
+            fi
+
+            local ans
+            ans="$(find . -name "*${p#./}*" -type d 2>/dev/null)"
+            if [ "$ans" = "" ]; then
+                printf "%s\n" "Not found" 2>/dev/null
+                return 1
+            fi
+            ___x_cmd_cd_choose "$ans"
+            ;;
         
         # Self defined documents
         %clear)
@@ -281,7 +286,9 @@ ___x_cmd_cd_advise_candidates(){
 $(ls)
 A
         ;;
-        =*)
+        ./*)
+            ;;
+        ../*)
             ;;
         -)  ;;
         --)
