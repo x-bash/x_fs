@@ -6,9 +6,10 @@ xrc assert
 # testcase for cd
 # Our testdir is testcase/testdir/a/b/ccc/ddd/eee/fff
 
+___x_cmd_cd_load_history
+
 test_clear_history(){
-    cd -%
-    # assert_stdout "cd -'?'"
+    cd -/
 }
 
 test_subfolder(){
@@ -36,7 +37,7 @@ test_last_folder(){
 }
 
 test_show_history(){
-    assert_stdout "cd -'?'" <<A
+    assert_stdout "cd -%" <<A
 $(pwd)
 $(pwd)/testcase/testdir/a
 $(pwd)/testcase/testdir/a/b/ccc
@@ -63,3 +64,4 @@ start_test() {
 }
 
 start_test ./testcase/v0_test_base
+___x_cmd_cd_load_history

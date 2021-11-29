@@ -12,6 +12,11 @@
 
 # TODO: better ui
 ___x_cmd_cd_choose(){
+
+    if [ "$1" = "" ]; then
+        printf "%s\n" "cd: no such directory: $p " >&2
+        return 1
+    fi
     
     local adir
     local i=1
@@ -121,23 +126,40 @@ $___X_CMD_CD_HISTORY"
     fi
 }
 
-___X_CMD_AWK_CODE='{
-    if (count > 200) { exit(exit_code); }
-    if (data[$0] == "") {
-        data[$0] = 1
-        print $0
-        count = count + 1
-    } else {
-        exit_code = 1
-    }
+#TODO: optimize
+___X_CMD_AWK_CODE='
+BEGIN {
+    len=0
+    res_len=0
+}
+{
+    data[ len ] = $0
+    len = len + 1
 }
 END {
-    exit(exit_code)
+    for (j=0; j<len && res_len<200 ; j++) {
+        if (map[ data[ len-j-1 ] ] != "") {
+            continue
+        }
+        map[ data[ len-j-1 ] ] = 1
+        res[ res_len ] = data[ len-j-1 ]
+        res_len = res_len + 1
+    }
+
+    for (j=0; j<res_len; j++) {
+        print res[res_len-j-1]
+    }
 }
 '
 
+___x_cmd_cd_load_history(){
+    ___X_CMD_CD_HISTORY=$(awk "$___X_CMD_AWK_CODE" <"$___X_CMD_ROOT/.tmp/cd/history")
+    printf "%s\n" "$___X_CMD_CD_HISTORY" > "$___X_CMD_ROOT/.tmp/cd/history"
+}
+
 ___x_cmd_cd(){
     local p="$1"
+    
     case "$p" in
         "")      ___x_cmd_cd_origin              ;;
         ...)     ___x_cmd_cd_origin ../..        ;;
@@ -158,31 +180,11 @@ ___x_cmd_cd(){
                 return
             fi
 
-            local ans
-            ans="$(find . -name "*${p#./}*" -type d 2>/dev/null)"
-            if [ "$ans" = "" ]; then
-                printf "%s\n" "Not found" 2>/dev/null
-                return 1
-            fi
-            ___x_cmd_cd_choose "$ans"
+            ___x_cmd_cd_choose "$(find . -name "*${p#./}*" -type d 2>/dev/null)"
             ;;
         
         # Self defined documents
-        # %clear)
-        #     rm "$___X_CMD_ROOT/.tmp/cd/history"
-        #     ;;
-        # %list)
-        #     local s
-        #     s="$(awk "$___X_CMD_AWK_CODE" <"$___X_CMD_ROOT/.tmp/cd/history")"
-        #     printf "%s\n" "$s" | tee "$___X_CMD_ROOT/.tmp/cd/history"
-        #     ;;
-        # %*)
-        #     local s
-        #     s="$(awk "$___X_CMD_AWK_CODE" <"$___X_CMD_ROOT/.tmp/cd/history")"
-        #     ___x_cmd_cd_choose "$(printf "%s\n" "$s" | tee "$___X_CMD_ROOT/.tmp/cd/history" | grep "${p#-}")"
-        #     ;;
-
-        -\?)     
+        -%)     
             ___X_CMD_CD_HISTORY="$(printf "%s" "$___X_CMD_CD_HISTORY" | awk "$___X_CMD_AWK_CODE")"
             printf "%s\n" "$___X_CMD_CD_HISTORY"
             ;;
@@ -205,72 +207,50 @@ ___x_cmd_cd(){
             ;;
         -*)
             ___X_CMD_CD_HISTORY="$(printf "%s" "$___X_CMD_CD_HISTORY" | awk "$___X_CMD_AWK_CODE")"
-            ___x_cmd_cd_choose "$(printf "%s" "$___X_CMD_CD_HISTORY" | grep "${p#-}")"
+            local ans
+            ans="$(awk "END {print}" <<A
+$(printf "%s" "$___X_CMD_CD_HISTORY" | grep "${p#-}")
+A
+)"
+            ___x_cmd_cd_origin "$ans"
             ;;
 
-        # /*) # Not practically worked       
-        #     if [ -d "$p" ]; then
-        #         ___x_cmd_cd_origin "$p" && return
-        #         return
-        #     fi
-
-        #     local ans
-        #     ans="$(find / \
-        #         -path "$HOME/Library" -prune \
-        #         -o -path "$HOME/.*" -prune \
-        #         -o -path "*/.git" -prune \
-        #         -o -name "*${p#/}*" -type d -print 2>/dev/null)"
-        #     if [ "$ans" = "" ]; then
-        #         printf "%s\n" "Not found" 2>/dev/null
-        #         return 1
-        #     fi
-        #     ___x_cmd_cd_choose "$ans"
-        #     ;;
         /*) 
             if [ -d "$p" ]; then
                 ___x_cmd_cd_origin "$p" && return
             fi
-            local ans
-            ans="$(___x_cmd_cd_iter / "${p#/}")"
-            if [ "$ans" = "" ]; then
-                printf "%s\n" "cd: no such directory: $p " 2>/dev/null
-                return 1
-            fi
-            ___x_cmd_cd_choose "$ans"
+
+            ___x_cmd_cd_choose "$(___x_cmd_cd_iter / "${p#/}")"
             ;;
         */*)
             if [ -d "$p" ]; then
                 ___x_cmd_cd_origin "$p" && return
             fi
 
-            local ans
-            ans="$(___x_cmd_cd_iter . "${p}")"
-            if [ "$ans" = "" ]; then
-                printf "%s\n" "cd: no such directory: $p " 2>/dev/null
-                return 1
-            fi
-
-            ___x_cmd_cd_choose "$ans"
+            ___x_cmd_cd_choose "$(___x_cmd_cd_iter . "${p}")"
             ;;
         *)
             if [ -d "$p" ]; then
                 ___x_cmd_cd_origin "$p"
                 return
-            fi
-
-            local ans
-            ans="$(find "$HOME" \
-                -path "$HOME/Library" -prune \
-                -o -path "$HOME/.*" -prune \
-                -o -path "*/.git" -prune \
-                -o -name "*$p*" -type d -print 2>/dev/null)"
-            if [ "$ans" = "" ]; then
-                printf "%s\n" "Not found" 2>/dev/null
-                return 1
-            fi
-            ___x_cmd_cd_choose "$ans"
+            fi    
+            ___X_CMD_CD_HISTORY="$(printf "%s" "$___X_CMD_CD_HISTORY" | awk "$___X_CMD_AWK_CODE")"
+            ___x_cmd_cd_choose "$(printf "%s" "$___X_CMD_CD_HISTORY" | grep "${p#-}")"
             ;;
 
+            # use no find to find the most similar one
+            # local ans
+            # ans="$(find "$HOME" \
+            #     -path "$HOME/Library" -prune \
+            #     -o -path "$HOME/.*" -prune \
+            #     -o -path "*/.git" -prune \
+            #     -o -name "*$p*" -type d -print 2>/dev/null)"
+            # if [ "$ans" = "" ]; then
+            #     printf "%s\n" "Not found" 2>/dev/null
+            #     return 1
+            # fi
+
+            # ___x_cmd_cd_choose "$ans"
     esac   
 }
 
