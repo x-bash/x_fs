@@ -178,7 +178,6 @@ ___x_cmd_cd(){
             printf "%s\n" "$s" | tee "$___X_CMD_ROOT/.tmp/cd/history"
             ;;
         %*)
-            echo "====test====: here3" >&2
             local s
             s="$(awk "$___X_CMD_AWK_CODE" <"$___X_CMD_ROOT/.tmp/cd/history")"
             ___x_cmd_cd_choose "$(printf "%s\n" "$s" | tee "$___X_CMD_ROOT/.tmp/cd/history" | grep "${p#-}")"
