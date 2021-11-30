@@ -154,7 +154,7 @@ BEGIN {
     len = len + 1
 }
 END {
-    for (j=0; j<len && res_len<10; j++) {
+    for (j=0; j<len && res_len<200; j++) {
         if (map[ data[ len-j-1 ] ] != "") {
             continue
         }
@@ -226,7 +226,19 @@ $(printf "%s" "$___X_CMD_CD_HISTORY" | grep "${p#-}")
 A
 )"         
             ;;
-        "="*)
+        :*)
+            p=${p#:}
+            local ans
+            ans="$(find "$HOME" \
+                -path "$HOME/Library" -prune \
+                -o -path "$HOME/.*" -prune \
+                -o -path "*/.git" -prune \
+                -o -name "*$p*" -type d -print 2>/dev/null)"
+            if [ "$ans" = "" ]; then
+                printf "%s\n" "not found: " 2>/dev/null
+                return 1
+            fi
+            ___x_cmd_cd_choose "$ans"
             ;;
         /*)    ___x_cmd_cd_choose "$(___x_cmd_cd_iter / "${p#/}")" ;;
         */*)   ___x_cmd_cd_choose "$(___x_cmd_cd_iter . "${p}")"   ;;
