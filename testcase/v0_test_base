@@ -44,12 +44,42 @@ $(pwd)/testcase/testdir/a/b/ccc
 A
 }
 
-# test_forward_backward(){
-#     cd =ccc
-#     pwd
-#     cd ../x_fs
-#     pwd
-# }
+test_forward_backward(){
+    cd ./ccc
+    if ! [ "$(pwd)" = "${a}/testcase/testdir/a/b/ccc" ]; then
+        echo "error: $(pwd) != ${a}/testcase/testdir/a/b/ccc"
+    fi
+    cd ./eee
+    if ! [ "$(pwd)" = "${a}/testcase/testdir/a/b/ccc/ddd/eee" ]; then
+        echo "error: $(pwd) != ${a}/testcase/testdir/a/b/ccc/ddd/eee"
+    fi
+    cd ../testcas
+    if ! [ "$(pwd)" = "${a}/testcase" ]; then
+        echo "error: $(pwd) != ${a}/testcase"
+    fi
+    cd ../
+}
+
+test_in_short(){
+    cd t/t
+    if ! [ "$(pwd)" = "${a}/testcase/testdir" ]; then
+        echo "error: $(pwd) != ${a}/testcase/testdir"
+    fi
+    cd - > /dev/null
+    cd /u/b
+    if ! [ "$(pwd)" = "/usr/bin" ]; then
+        echo "error: $(pwd) != /usr/bin"
+    fi
+    cd - > /dev/null
+}
+
+test_find(){
+    cd eee
+    if ! [ "$(pwd)" = "${a}/testcase/testdir/a/b/ccc/ddd/eee" ]; then
+        echo "error: $(pwd) != ${a}/testcase/testdir/a/b/ccc/ddd/eee"
+    fi
+    cd - > /dev/null
+}
 
 # utils
 

@@ -17,6 +17,14 @@ ___x_cmd_cd_choose(){
         printf "%s\n" "cd: no such directory: $p " >&2
         return 1
     fi
+
+#     if [ -n "${BASH_VERSION}${ZSH_VERSION}" ] && [ "${-#*i}" = "$-" ]; then
+#         ___x_cmd_cd_origin "$(awk "END {print}" <<A
+# $(printf "%s" "$___X_CMD_CD_HISTORY" | grep "$1")
+# A
+# )"
+#         return 
+#     fi
     
     local adir
     local i=1
@@ -58,7 +66,7 @@ BEGIN {
     return_code = 1
     arrl = split(p, arr, "/")
     for (i=arrl; i>=1; i--) {
-        if (match(arr[i], "^[A-Za-z0-9\ _@-]*" target "[A-Za-z0-9\ _-@]*$")) {
+        if (match(arr[i], target)) {
             res = ""
             for (j=1; j<=i; ++j) {
                 if (arr[j] == "") continue
@@ -169,7 +177,6 @@ ___x_cmd_cd(){
         ...)     ___x_cmd_cd_origin ../..        ;;
         ....)    ___x_cmd_cd_origin ../../../    ;;
         ../*)    ___x_cmd_cd_back "${p#../}"     ;;
-        .../*)   ___x_cmd_cd_back "${p#.../}"    ;;
         ./*)     ___x_cmd_cd_choose "$(find . -name "*${p#./}*" -type d 2>/dev/null)" ;;
         
         # Self defined documents
