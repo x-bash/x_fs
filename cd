@@ -13,19 +13,12 @@
 # TODO: better ui
 ___x_cmd_cd_choose(){
 
-    if [ "$1" = "" ]; then
+    # If no interactive, return false
+    if [ "$1" = "" ] || [ "${-#*i}${___X_CMD_FS_DEBUG}" = "$-" ]; then
         printf "%s\n" "cd: no such directory: $p " >&2
         return 1
     fi
 
-#     if [ -n "${BASH_VERSION}${ZSH_VERSION}" ] && [ "${-#*i}" = "$-" ]; then
-#         ___x_cmd_cd_origin "$(awk "END {print}" <<A
-# $(printf "%s" "$___X_CMD_CD_HISTORY" | grep "$1")
-# A
-# )"
-#         return 
-#     fi
-    
     local adir
     local i=1
     local text=
@@ -126,6 +119,7 @@ ___x_cmd_cd_origin(){
         command cd "$@"
     fi
 
+    [ "${-#*i}${___X_CMD_FS_DEBUG}" = "$-" ] && return
     if [ -z "$___X_CMD_CD_HISTORY" ]; then
         ___X_CMD_CD_HISTORY="$(pwd | tee -a "$___X_CMD_ROOT/.tmp/cd/history")"
     else

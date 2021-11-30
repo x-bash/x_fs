@@ -7,6 +7,7 @@ xrc assert
 # Our testdir is testcase/testdir/a/b/ccc/ddd/eee/fff
 
 ___x_cmd_cd_load_history
+___X_CMD_FS_DEBUG=1
 
 test_clear_history(){
     cd -/
