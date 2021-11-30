@@ -128,34 +128,57 @@ $___X_CMD_CD_HISTORY"
     fi
 }
 
-___X_CMD_AWK_CODE='
+___X_CMD_AWK_CODE='{
+    if (count > 200) { exit(exit_code); }
+    if (data[$0] == "") {
+        data[$0] = 1
+        print $0
+        count = count + 1
+    } else {
+        exit_code = 1
+    }
+}
+END {
+    exit(exit_code)
+}
+'
+
+___x_cmd_cd_load_history(){
+    ___X_CMD_CD_HISTORY=$(awk '
 BEGIN {
-    len=0
-    res_len=0
+    res_len = 0
+    len = 0
 }
 {
     data[ len ] = $0
     len = len + 1
 }
 END {
-    for (j=0; j<len && res_len<200 ; j++) {
+    for (j=0; j<len && res_len<10; j++) {
         if (map[ data[ len-j-1 ] ] != "") {
             continue
         }
         map[ data[ len-j-1 ] ] = 1
-        res[ res_len ] = data[ len-j-1 ]
         res_len = res_len + 1
+        print data[ len-j-1 ]
     }
+}' <"$___X_CMD_ROOT/.tmp/cd/history")
 
-    for (j=0; j<res_len; j++) {
-        print res[res_len-j-1]
+    printf "%s" "$___X_CMD_CD_HISTORY" | awk '
+BEGIN {
+    res_len=0
+    len=0
+}
+{
+    data[ len ] = $0
+    len = len + 1
+}
+END {
+    for (j=0; j<len ; j++) {
+        print data[ len-j-1 ]
     }
 }
-'
-
-___x_cmd_cd_load_history(){
-    ___X_CMD_CD_HISTORY=$(awk "$___X_CMD_AWK_CODE" <"$___X_CMD_ROOT/.tmp/cd/history")
-    printf "%s\n" "$___X_CMD_CD_HISTORY" > "$___X_CMD_ROOT/.tmp/cd/history"
+    ' > "$___X_CMD_ROOT/.tmp/cd/history"
 }
 
 ___x_cmd_cd(){
@@ -198,12 +221,13 @@ ___x_cmd_cd(){
             ;;
         -*)
             ___X_CMD_CD_HISTORY="$(printf "%s" "$___X_CMD_CD_HISTORY" | awk "$___X_CMD_AWK_CODE")"
-            ___x_cmd_cd_origin "$(awk "END {print}" <<A
+            ___x_cmd_cd_origin "$(awk "FNR <= 1" <<A
 $(printf "%s" "$___X_CMD_CD_HISTORY" | grep "${p#-}")
 A
-)"
+)"         
             ;;
-
+        "="*)
+            ;;
         /*)    ___x_cmd_cd_choose "$(___x_cmd_cd_iter / "${p#/}")" ;;
         */*)   ___x_cmd_cd_choose "$(___x_cmd_cd_iter . "${p}")"   ;;
         *)
