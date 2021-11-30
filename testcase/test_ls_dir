@@ -2,5 +2,4 @@
 
 cur="/U*"
 ls -d $cur/
-
 eval "ls -d $cur/"
