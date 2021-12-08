@@ -180,6 +180,7 @@ END {
 }
     ' > "$___X_CMD_ROOT/.tmp/cd/history"
 }
+___x_cmd_cd_load_history
 
 ___x_cmd_cd(){
     local p="$1"
