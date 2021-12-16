@@ -14,6 +14,7 @@ ___x_cmd_fs_activate(){
     alias mv=___x_cmd_mv
     alias cp=___x_cmd_cp
     alias rm=___x_cmd_rm
+    alias open=___x_cmd_open
 }
 
 # ___x_cmd_fs_activate
