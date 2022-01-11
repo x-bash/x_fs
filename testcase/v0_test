@@ -1,13 +1,12 @@
 # shellcheck shell=sh disable=SC3043,SC2164
 
 x log init x_fs
-
-cp -r ./* ~/.x-cmd/x_fs/
+x ws install
 
 test_cross_env() {
-    for i in debian alpine centos; do
+    for i in base-debian-1-curl base-debian-2-dev base-alpine-1-curl base-alpine-2-dev base-centos-1-curl base-centos-2-dev ; do
         x_fs_log info "Testing : " "$i"
-        docker run -it -v  "$HOME"/.x-cmd/:/root/.x-cmd/ -v "$(pwd)":/pd "${i}" \
+        docker run -it -v  "$HOME"/.x-cmd/:/root/.x-cmd/ -v "$(pwd)":/pd "xcmd/${i}" \
             sh -c ". ~/.x-cmd/xrc/latest && cd pd && . ./testcase/v0_test_base"
     done
 

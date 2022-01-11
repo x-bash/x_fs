@@ -2,7 +2,7 @@
 
 ___X_CMD_XRC_MODULE_IMPORTED=
 
-xrc x_fs/v0 && ___x_cmd_fs_activate
+xrc x_fs/latest && ___x_cmd_fs_activate
 xrc assert
 
 # testcase for cd
