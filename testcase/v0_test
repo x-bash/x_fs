@@ -4,17 +4,14 @@ x log init x_fs
 x ws install
 
 test_cross_env() {
-    for i in base-debian-1-curl base-debian-2-dev base-alpine-1-curl base-alpine-2-dev base-centos-1-curl base-centos-2-dev ; do
+    for i in debian alpine centos; do
         x_fs_log info "Testing : " "$i"
-        docker run -it -v  "$HOME"/.x-cmd/:/root/.x-cmd/ -v "$(pwd)":/pd "xcmd/${i}" \
-            sh -c ". ~/.x-cmd/xrc/latest && cd pd && . ./testcase/v0_test_base"
+        docker run -it -v "$(pwd)":/pd "xcmd/${i}-dev" bash -i -c "cd pd && . ./testcase/v0_test_base"
     done
 
     for i in 3 4 5 ; do
-        for j in 1-curl 2-dev ; do
-            x_fs_log info "Testing : " "base-bash${i}-${j}"
-            docker run -it -v  ~/.x-cmd/:/root/.x-cmd/ -v "$(pwd)":/pd "xcmd/base-bash${i}-${j}" bash -c ". ~/.x-cmd/xrc/latest && cd pd && . ./testcase/v0_test_base"
-        done
+        x_fs_log info "Testing : " "bash${i}"
+        docker run -it -v "$(pwd)":/pd "xcmd/bash${i}-dev" bash -i -c ". ~/.x-cmd/xrc/latest && cd pd && . ./testcase/v0_test_base"
     done
 }
 
